@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Villages Catalogue — the directory for everything else</title>
+<style>
+  :root{--navy:#0B3D5C;--teal:#0E7C86;--green:#2E7D32;--gold:#C9971C;--bg:#F4F7F9;--card:#fff;--ink:#1B2631;--grey:#566573;--line:#D9E2E7;--feat:#FFF6E0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.5}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+  header{background:var(--teal);color:#fff;padding:16px 0}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .logo{font-size:24px;font-weight:800}.logo span{color:var(--gold)}
+  .tagline{color:#cfeef1;font-size:15px}
+  .hero{background:linear-gradient(180deg,#0B3D5C,#0E7C86);color:#fff;padding:26px 0 22px}
+  .hero h1{font-size:30px;line-height:1.2;margin-bottom:8px}
+  .hero p{color:#dbeef1;font-size:18px;max-width:780px}
+  .search{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .search input{flex:1;min-width:240px;padding:14px 16px;border:none;border-radius:10px;font-size:17px}
+  .search button{background:var(--gold);color:#3a2c00;border:none;font-weight:700;font-size:17px;padding:14px 22px;border-radius:10px;cursor:pointer}
+  .cats{background:#fff;border-bottom:1px solid var(--line);padding:14px 0}
+  .catrow{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;font-size:15px;font-weight:600;background:#fff;user-select:none}
+  .chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  section{padding:24px 0}
+  h2{font-size:22px;color:var(--navy);margin-bottom:4px}
+  .sub{color:var(--grey);margin-bottom:16px;font-size:15px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;transition:.15s}
+  .card.feat{background:var(--feat);border-color:#EAD08A;box-shadow:0 4px 14px rgba(201,151,28,.15)}
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .spon{position:absolute;top:0;right:0;background:var(--gold);color:#3a2c00;font-size:11px;font-weight:800;padding:4px 10px;border-bottom-left-radius:10px;text-transform:uppercase;letter-spacing:.4px}
+  .cname{font-size:20px;font-weight:800;padding-right:90px}
+  .cat{display:inline-block;background:#E7F0FF;color:#13408f;font-size:13px;font-weight:700;padding:3px 9px;border-radius:7px;margin:6px 0}
+  .meta{color:var(--grey);font-size:15px;margin:2px 0 8px}
+  .stars{color:var(--gold);font-weight:800}
+  .verified{color:var(--green);font-weight:700;font-size:14px}
+  .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .mini{border:1.5px solid var(--teal);color:var(--teal);background:#fff;border-radius:8px;padding:8px 12px;font-weight:700;font-size:14px;cursor:pointer}
+  .mini.fill{background:var(--teal);color:#fff}
+  .lead{background:var(--green);border:none;color:#fff;border-radius:8px;padding:8px 12px;font-weight:700;font-size:14px;cursor:pointer}
+  .ev{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .evcard{background:#fff;border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:10px;padding:14px}
+  .evcard .d{color:var(--teal);font-weight:800;font-size:14px}
+  .evcard h3{font-size:17px;margin:3px 0}
+  .evcard .w{color:var(--grey);font-size:14px}
+  .promo{background:var(--navy);color:#fff;border-radius:14px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .promo h2{color:#fff}.promo p{color:#cde0e6;font-size:15px;max-width:560px}
+  .btn{background:var(--gold);color:#3a2c00;border:none;font-weight:800;font-size:16px;padding:13px 22px;border-radius:10px;cursor:pointer}
+  .news{background:#E8F3E9;border:1px solid #BFE0C4;border-radius:14px;padding:22px;text-align:center}
+  .news h2{color:var(--green)}.news .f{display:flex;gap:10px;max-width:480px;margin:14px auto 0;flex-wrap:wrap}
+  .news input{flex:1;min-width:200px;padding:13px;border:1.5px solid #BFE0C4;border-radius:10px;font-size:16px}
+  .modal{position:fixed;inset:0;background:rgba(11,61,92,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:18px}
+  .modal.show{display:flex}
+  .box{background:#fff;border-radius:16px;max-width:560px;width:100%;padding:26px;max-height:90vh;overflow:auto}
+  .box h2{margin-bottom:6px}.x{float:right;font-size:26px;cursor:pointer;color:var(--grey);line-height:1}
+  .tier{border:2px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+  .tier.best{border-color:var(--gold);background:var(--feat)}
+  .tier h3{font-size:18px;color:var(--navy);display:flex;justify-content:space-between}.tier .price{color:var(--gold);font-weight:800}
+  .tier ul{margin:8px 0 0 18px;font-size:15px;color:var(--grey)}
+  .field{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:9px;font-size:16px;margin-top:10px}
+  .none{text-align:center;color:var(--grey);padding:40px;font-size:17px}
+  footer{background:var(--navy);color:#a9c6d3;padding:22px 0;font-size:14px;margin-top:20px}footer b{color:#fff}
+  .demoNote{background:#FFF1CF;color:#7a5b00;font-size:13px;text-align:center;padding:7px}
+  @media(max-width:760px){.grid,.ev{grid-template-columns:1fr}.hero h1{font-size:24px}}
+
+  .buzz{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .bz{background:#fff;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:13px}
+  .bz .dt{color:var(--grey);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+  .bz a{font-weight:700;font-size:15px;display:block;margin-top:3px;color:var(--ink)}
+  .bz a:hover{color:var(--teal)}
+  @media(max-width:760px){.buzz{grid-template-columns:1fr}}
+
+  .ups{display:flex;flex-direction:column;gap:8px}
+  .up{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .up .tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:7px;white-space:nowrap;text-transform:uppercase;letter-spacing:.3px}
+  .t-open{background:#E4F4E6;color:#1d6322}.t-close{background:#FBE6E6;color:#9b2222}.t-fix{background:#EAE3F7;color:#5b3aa6}.t-news{background:#E7F0FF;color:#13408f}
+  .up a{font-weight:700;font-size:15px;color:var(--ink)}.up a:hover{color:var(--teal)}
+
+  /* Ask Susan — prominent band */
+  .ask-band{background:linear-gradient(135deg,#E9BC44 0%,#C9971C 55%,#B5851A 100%);padding:30px 0;border-top:3px solid #fff3d6;box-shadow:0 8px 24px rgba(11,61,92,.20);position:relative;z-index:5}
+  .ask-band-in{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:center}
+  .ask-band-left{display:flex;gap:20px;align-items:center}
+  .ask-band-photo{width:108px;height:108px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 5px 16px rgba(11,61,92,.30);flex-shrink:0}
+  .ask-kicker{display:inline-block;background:var(--navy);color:#fff;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:5px 13px;border-radius:999px;margin-bottom:9px}
+  .ask-band-h{font-size:44px;line-height:1;color:var(--navy);margin:0 0 8px;font-weight:800;letter-spacing:-.5px}
+  .ask-band-sub{color:#3d2e00;font-size:18px;line-height:1.4;margin:0;max-width:430px;font-weight:600}
+  .ask-band-form{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.75);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 14px rgba(11,61,92,.12)}
+  .ask-band-row{display:flex;gap:10px;flex-wrap:wrap}
+  .ask-band-form input[type=text],.ask-band-form input[type=email]{flex:1;min-width:160px;padding:13px 14px;border:1px solid #e0c47a;border-radius:10px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff}
+  .ask-band-form textarea{width:100%;padding:13px 14px;border:1px solid #e0c47a;border-radius:10px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff;resize:vertical}
+  .ask-band-form input:focus,.ask-band-form textarea:focus{outline:none;border-color:var(--navy)}
+  .ask-band-btn{align-self:stretch;background:var(--navy);color:#fff;border:none;font-weight:800;font-size:18px;padding:15px 22px;border-radius:10px;cursor:pointer;letter-spacing:.3px;transition:.15s}
+  .ask-band-btn:hover{background:#0a3450;transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,61,92,.3)}
+  .ask-hp{position:absolute!important;left:-9999px;top:-9999px}
+  .ask-band-thanks{background:#fff;border-radius:12px;padding:18px 20px;color:var(--navy);font-size:17px;line-height:1.5;font-weight:600;box-shadow:0 4px 14px rgba(11,61,92,.12)}
+  @media(max-width:760px){.ask-band-in{grid-template-columns:1fr;gap:18px}.ask-band-h{font-size:32px}.ask-band-photo{width:84px;height:84px}}
+</style>
+</head>
+<body>
+
+
+<header><div class="wrap top">
+  <div><div class="logo">The Villages <span>Catalogue</span></div>
+  <div class="tagline">The directory for everything else in The Villages.</div></div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <a href='https://thevillagesfood.com' style='color:#fff;background:rgba(255,255,255,.18);padding:9px 15px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none'>🍽 Food &amp; Dining</a>
+  <a href='/blog' style='color:#fff;background:rgba(255,255,255,.18);padding:9px 15px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none'>📝 Blog</a>
+  </div>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <h1>Who do I call for that? Find a trusted local pro in seconds.</h1>
+  <p>Golf-cart repair, handymen, healthcare, contractors, lawn &amp; pool, clubs, classes and the community events calendar — every local business that isn't a restaurant, vetted and in one place.</p>
+  <div class="search"><input id="q" type="text" placeholder="Search a service or business… (e.g. golf cart, AC, handyman)" oninput="render()">
+  <button onclick="render()">Search</button></div>
+</div></div>
+
+
+<section class="ask-band" id="ask-susan">
+  <div class="wrap ask-band-in">
+    <div class="ask-band-left">
+      <img src="susan-ask.jpg" alt="Susan, your Villages insider" class="ask-band-photo">
+      <div>
+        <span class="ask-kicker">Your Villages insider &mdash; on call</span>
+        <h2 class="ask-band-h">Ask Susan</h2>
+        <p class="ask-band-sub">Who do you call for that? Ask me &mdash; after twelve years here, I&rsquo;ve got a name and a number for just about everything.</p>
+      </div>
+    </div>
+    <form name="ask-susan" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" class="ask-band-form" id="askSusanForm" action="/">
+      <input type="hidden" name="form-name" value="ask-susan">
+      <p class="ask-hp"><label>Leave this empty if you're human: <input name="bot-field"></label></p>
+      <div class="ask-band-row">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="your@email.com" required>
+      </div>
+      <textarea name="question" rows="2" placeholder="Honest A/C guy, a good handyman, which club actually welcomes newcomers? Ask away…" required></textarea>
+      <button type="submit" class="ask-band-btn">Ask Susan &rarr;</button>
+    </form>
+    <div class="ask-band-thanks" id="askSusanThanks" style="display:none">
+      <strong>Thanks, neighbor!</strong> Susan got your question and she'll get back to you. Now go enjoy yourself. &mdash; S.
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var f=document.getElementById('askSusanForm');
+  if(!f) return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var body=new URLSearchParams(new FormData(f)).toString();
+    var done=function(){f.style.display='none';document.getElementById('askSusanThanks').style.display='block';};
+    fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body}).then(done).catch(done);
+  });
+})();
+</script>
+
+<div class="cats"><div class="wrap catrow" id="chips"></div></div>
+
+<section><div class="wrap">
+  <h2>Need a few quotes fast?</h2>
+  <div class="sub">Tell us what you need and we'll point you to a trusted local business in that category.</div>
+  <div class="promo">
+    <div><h2>Get 3 quotes — free</h2><p>Describe the job once. Up to 3 participating Villages pros respond. You pick. They pay us per lead — you pay nothing.</p></div>
+    <button class="btn" onclick="openLead()">Request quotes →</button>
+  </div>
+</div></section>
+
+<section style="padding-top:4px"><div class="wrap">
+  <h2>Local Businesses &amp; Services</h2>
+  <div class="sub">Category sponsors appear first. Verified = claimed &amp; confirmed by the owner.</div>
+  <div class="grid" id="grid"></div>
+  <div class="none" id="none" style="display:none">Nothing matches. Clear the filter or search again.</div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>This Week in The Villages</h2>
+  <div class="sub">Clubs, classes, recreation &amp; events. Auto-pulled from public calendars.</div>
+  <div class="ev" id="ev"></div>
+</div></section>
+
+<section style="padding-top:4px"><div class="wrap">
+  <h2>📰 Villages Buzz — local headlines</h2>
+  <div class="sub">Fresh from local news. Auto-pulled (RSS) and linked back to the source.</div>
+  <div class="buzz" id="buzz"></div>
+</div></section>
+
+<section style="padding-top:4px"><div class="wrap promo">
+  <div><h2>Run a business here? Own your category.</h2><p>Claim your listing free — or become the exclusive sponsor of your category (e.g. "Golf Cart Repair") and get every lead in it.</p></div>
+  <button class="btn" onclick="openClaim()">Claim / Sponsor →</button>
+</div></section>
+
+<section style="padding-top:4px"><div class="wrap news">
+  <h2>📬 The Catalogue Weekly</h2>
+  <p class="sub" style="margin-bottom:0">New businesses, this week's events, and a new-resident tip. One email a week. Free.</p>
+  <div class="f"><input id="email" type="email" placeholder="your@email.com"><button class="btn" onclick="subscribe()">Subscribe free</button></div>
+</div></section>
+
+
+<section style="padding-top:4px"><div class="wrap">
+  <h2>📣 Updates — openings, closings &amp; corrections</h2>
+  <div class="sub">What changed this week. We post closings and fix our mistakes here too.</div>
+  <div class="ups" id="ups"></div>
+</div></section>
+
+<section style="padding-top:4px">
+  <div class="wrap">
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:flex;gap:22px;align-items:center;flex-wrap:wrap">
+      <img src="susan.jpg" alt="Susan, your Villages insider" width="150" height="150" style="width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid var(--gold);flex-shrink:0;box-shadow:0 4px 14px rgba(11,61,92,.18)">
+      <div style="flex:1;min-width:250px">
+        <h2 style="margin-bottom:6px">Meet Susan &mdash; your Villages insider</h2>
+        <p style="color:var(--grey);font-size:16px;line-height:1.6;margin:0">Hi, I'm Susan &mdash; a retired principal who swapped Ohio winters for golf carts, pickleball, and happy hours in The Villages. I've spent years getting to know every square, patio, and live-music night worth your time, and I'm the local behind this site and its weekly blog. When you want to know what's actually good &mdash; or who to call &mdash; I'm your neighbor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <b>The Villages Catalogue</b> — a Needed · Usable · Income-generating local asset.<br>
+  Live data: Google Places (businesses), public event calendars, weather.gov. Demo data shown here for illustration.
+</div></footer>
+
+<!-- claim modal -->
+<div class="modal" id="claim"><div class="box">
+  <span class="x" onclick="close_('claim')">×</span>
+  <h2>Claim or sponsor your listing</h2>
+  <div class="sub">Self-serve via Stripe in the live version.</div>
+  <div class="tier"><h3>Free <span class="price">$0</span></h3><ul><li>Basic listing: name, category, phone, map</li></ul></div>
+  <div class="tier"><h3>Pro <span class="price">$29/mo</span></h3><ul><li>Photos, website, hours, "Verified" badge</li><li>Show up higher in your category</li></ul></div>
+  <div class="tier best"><h3>Category Sponsor <span class="price">$150–$300/mo</span></h3><ul><li>Exclusive — you own the category (e.g. Golf Cart Repair)</li><li>Top placement + every lead-gen request in it</li><li>Logo in the Catalogue Weekly</li></ul></div>
+  <button class="btn" style="margin-top:16px;width:100%" onclick="alert('Demo: live site opens Stripe Checkout and activates the sponsorship automatically.')">Continue →</button>
+</div></div>
+
+<!-- lead modal -->
+<div class="modal" id="leadm"><div class="box">
+  <span class="x" onclick="close_('leadm')">×</span>
+  <h2>Get 3 quotes — free</h2>
+  <div class="sub">We route this to vetted pros. They pay per lead; you pay nothing.</div>
+  <select class="field" id="lcat"></select>
+  <input class="field" id="lname" placeholder="Your name">
+  <input class="field" id="ltel" placeholder="Phone or email">
+  <textarea class="field" id="ldesc" rows="3" placeholder="Briefly, what do you need?"></textarea>
+  <button class="btn" style="margin-top:14px;width:100%" onclick="sendLead()">Send my request →</button>
+</div></div>
+
+<script>
+const CATS=["Golf Carts","HVAC / AC","Real Estate","Healthcare","Lawn & Landscaping","Pest Control","Plumbing","Electricians","Pet Services","Home / Handyman","Cleaning","Moving","Auto","Legal / Estate","Roofing","Painting","Pools & Patios","Insurance","Computer / Tech","Garage Doors","Home Watch","Pressure Washing","Windows & Sunrooms","Flooring","Water Treatment","Blinds & Shutters","Tree Service","Appliance Repair","Locksmith","Gutters","Landscape Curbing","Storage","Screen Enclosures","Irrigation","Concrete Coatings","Hearing Care","Financial / Tax","Veterinary","Eye Care","Solar","Mobility / Medical","Window Cleaning","Mattress / Furniture","Window Tinting","Pet Waste Removal"];
+const B=[{n:"PC Wizards",c:"Computer / Tech",r:0,v:false,tier:"free",tel:"(352) 350-0610",note:"Mobile PC and Mac repair serving The Villages, Lady Lake and Leesburg. On-site, remote and pickup/drop-off service; virus removal, hardware repair, data recovery, Wi-Fi setup. No storefront. Mon-Fri 10am-5pm."},{n:"Southern Oaks Home Watch",c:"Home Watch",r:0,v:false,tier:"free",tel:"(352) 750-9442",note:"Owner-operated home watch based in The Villages. Weekly or bi-weekly interior and exterior inspections, leak and pest checks, A/C and breaker checks, written checklist reports, plus owner arrival prep and closing service."},{n:"Floor Coverings International of The Villages",c:"Flooring",r:0,v:false,tier:"free",tel:"(352) 995-2482",note:"Mobile flooring showroom serving The Villages. In-home design consultation with carpet, tile, vinyl, laminate and hardwood samples, plus measurement and installation. Mon-Fri 8am-5pm."},{n:"Village Pet Villas",c:"Pet Services",r:0,v:false,tier:"free",tel:"(352) 750-3000",note:"Pet grooming for dogs and cats at 102 LaGrande Blvd, Lady Lake, affiliated with Village Veterinarian. Baths, haircuts, nail trims and styling. Mon-Sat 8am-4pm, closed Sunday."},{n:"McGuire Tree Service & Land Clearing",c:"Tree Service",r:0,v:false,tier:"free",tel:"(352) 397-8244",note:"Family-owned, fully insured tree company serving The Villages and Sumter County since 2016. Tree removal, trimming and palm pruning, stump grinding, brush and lot clearing. Mon-Fri 7am-6pm, Sat 8am-2pm, 24/7 storm response."},
+ {n:"Miller & Sons Plumbing",c:"Plumbing",r:0,v:false,tier:"free",tel:"(352) 269-1952",note:"Small family-owned plumbing company (Lic. CFC1429711) with a Villages-area office at 4313 E CR 466, Oxford. Repairs, emergency service, remodels, new construction and water treatment. Military and senior discounts; free consultation."},
+ {n:"Pest 911",c:"Pest Control",r:0,v:false,tier:"free",tel:"(352) 629-9111",note:"Family-owned pest control based at 12785 SE Hwy 42, Weirsdale, serving The Villages since 1985. Residential and commercial pest control, termite inspections and fumigation, WDO/real estate inspections, mosquito control and lawn fertilization. Call or text for a free quote."},
+ {n:"Accurso Automobile Repair",c:"Auto",r:0,v:false,tier:"free",tel:"(352) 748-9004",note:"Locally owned NAPA AutoCare Center at 11615 CR 108, Oxford — just west of Walmart on CR 466. Owner Jason Accurso is an ASE Certified Master Technician. Diagnostics, brakes, A/C, engine and transmission work with a 12-month/12,000-mile NAPA warranty. Mon–Thu 8am–5pm, Fri 8am–noon."},
+ {n:"Miss Kate's Bed & Biscuit",c:"Pet Services",r:0,v:false,tier:"free",tel:"(352) 575-2020",note:"Dog and cat boarding plus doggy daycare on 5 shaded acres at 751 NW 111th Lane, Oxford — about 6 miles from The Villages. Owners live on site, climate-controlled suites and live check-in cameras. Open 7 days, 7am–7pm; facility tours Sun–Wed by appointment."},
+ {n:"Realty Executives in The Villages",c:"Real Estate",r:0,v:false,tier:"free",tel:"(352) 753-7500",note:"Independently owned full-service resale brokerage at Liberty Plaza, 11714 NE 62nd Terrace, Suite 300, The Villages. Buyer and seller representation, home valuations and listings across The Villages, Lady Lake and the surrounding area."},
+ {n:"The Villages Golf Cars",c:"Golf Carts",r:0,v:false,tier:"free",tel:"(352) 753-6750",note:"The official dealer — sales, service, rentals & cart gas. Locations at Spanish Springs (352-750-3410), Lake Sumter Landing (352-753-6750), Brownwood (352-205-8909) and Eastport (352-751-3360). Open 7 days."},
+ {n:"Battery Boys",c:"Golf Carts",r:0,v:false,tier:"free",tel:"(352) 643-1241",note:"Mobile golf cart batteries & repair — they come to your driveway. Authorized Trojan battery dealer. Mon–Fri 8am–5pm."},
+ {n:"Munn's Sales & Service",c:"HVAC / AC",r:0,v:false,tier:"free",tel:"(352) 787-7741",note:"AC & heating repair, service and installation serving The Villages, Lady Lake, Wildwood and Leesburg. Mon–Fri 7:30am–8pm."},
+ {n:"Properties of The Villages",c:"Real Estate",r:0,v:false,tier:"free",tel:"(352) 753-6655",note:"The official sales team for new homes and resales in The Villages. Sales & information centers open 7 days, 8am–6pm."},
+ {n:"The Villages Health (CenterWell)",c:"Healthcare",r:0,v:false,tier:"free",tel:"(352) 674-1700",note:"Senior-focused primary care and specialty centers across The Villages, now part of CenterWell Senior Primary Care."},
+ {n:"Massey Services",c:"Lawn & Landscaping",r:0,v:false,tier:"free",tel:"(352) 259-6991",note:"GreenUP lawn fertilization, weed control, aeration, irrigation maintenance and pest control. Local office at 606 Hoopfer Way, Lady Lake, serving The Villages since 1985. Free inspections."},
+ {n:"Deans Services",c:"Pest Control",r:0,v:false,tier:"free",tel:"(352) 787-5300",note:"Family-owned pest control and lawn care based in Leesburg, serving The Villages area since 1980. Mon–Fri 8am–5pm."},
+ {n:"Mike Scott Plumbing",c:"Plumbing",r:0,v:false,tier:"free",tel:"(866) 314-4443",note:"Plumbing, septic, irrigation and gas services across Sumter, Lake and Marion counties including The Villages. Open 24/7."},
+ {n:"JJ Electricians",c:"Electricians",r:0,v:false,tier:"free",tel:"(352) 268-9707",note:"Locally owned, licensed & insured electricians (Lic. EC13011671) at 1080 Bichara Blvd, Lady Lake. Repairs, panel upgrades, rewiring, lighting. 24/7 emergency service."},
+ {n:"Woof Gang Bakery & Grooming",c:"Pet Services",r:0,v:false,tier:"free",tel:"(352) 775-4654",note:"Pet grooming, gourmet treats and supplies at 3682 Meggison Rd in The Villages (Magnolia Plaza area). Open 7 days."},
+ {n:"Mr. Handyman of The Villages",c:"Home / Handyman",r:0,v:false,tier:"free",tel:"(352) 877-2964",note:"Locally owned, licensed & insured handyman service — repairs, installations, drywall, tile and home maintenance. Part of the national Mr. Handyman network serving homeowners since 1996."},
+ {n:"Molly Maid of The Villages",c:"Cleaning",r:0,v:false,tier:"free",tel:"(352) 702-4660",note:"Customized recurring and one-time house cleaning for The Villages area. Free estimates; part of the national Molly Maid network."},
+ {n:"Village Mover",c:"Moving",r:0,v:false,tier:"free",tel:"(352) 751-2750",note:"Local and long-distance moving based at 611 N Dixie Ave, Fruitland Park, serving The Villages. BBB-listed. Mon & Fri 8am–6pm, Sat 8am–12:30pm."},
+ {n:"Sumter Tire & Auto",c:"Auto",r:0,v:false,tier:"free",tel:"(352) 748-6556",note:"Second-generation family auto shop in Wildwood since 1986 — tires, oil changes, brakes, alignments and ASE-certified repair. Mon–Fri 8am–5pm, Sat 8am–noon."},
+ {n:"BCN Law Firm (Boyette, Cummins & Nailos)",c:"Legal / Estate",r:0,v:false,tier:"free",tel:"(352) 775-4739",note:"Estate planning, wills, trusts and probate attorneys with an office at 8564 E CR 466, Suite 306, The Villages."},
+ {n:"State Certified Roofing & Construction",c:"Roofing",r:0,v:false,tier:"free",tel:"(352) 696-8989",note:"Veteran-owned, dual-licensed roofer (Lic. CCC1334499 / CRC1335172) based in Belleview serving The Villages, Lady Lake and Wildwood. Roof repair, replacement, inspections, gutters and 24/7 storm response."},
+ {n:"Don Ellis Painting & Pressure Cleaning",c:"Painting",r:0,v:false,tier:"free",tel:"(352) 259-0433",note:"Interior & exterior painting and pressure cleaning, established 1990. Based in Summerfield serving The Villages and central Florida. Senior discounts. Mon–Fri 9am–5pm."},
+ {n:"T & D Patio & Pool",c:"Pools & Patios",r:0,v:false,tier:"free",tel:"(352) 391-1036",note:"Local pool and patio company at 2255 Parr Dr in The Villages — pool construction, cages/enclosures and patio furnishings. Builds many of the pools in The Villages."},
+ {n:"The Villages Insurance Partners (The Baldwin Group)",c:"Insurance",r:0,v:false,tier:"free",tel:"(352) 751-6622",note:"Hometown independent agency — home, auto, golf cart and business insurance tailored to Villages residents. Now part of The Baldwin Group; same local advisors."},
+ {n:"uBreakiFix by Asurion — The Villages",c:"Computer / Tech",r:0,v:false,tier:"free",tel:"(352) 775-3777",note:"Phone, computer, tablet and game-console repair at 3463 Wedgewood Lane. Free diagnostics, most repairs same day, 1-year warranty. Mon–Sat 10am–7pm, closed Sun."},
+ {n:"Sunshine Air Conditioning",c:"HVAC / AC",r:0,v:false,tier:"free",tel:"(352) 353-7922",note:"Carrier Factory Authorized Dealer (Lic. CAC1821436) based in Belleview serving The Villages. AC/heating repair, installation, electrical and water heaters. 24/7 emergency response, free estimates, 100% satisfaction guarantee."},
+ {n:"Duke's Garage Doors",c:"Garage Doors",r:0,v:false,tier:"free",tel:"(352) 205-4799",note:"Garage door repair, installation, openers and garage screens from the local office at 510 CR 466, Lady Lake. Serving Central Florida since 2002 (Lic. CBC1254791). Same-day service, no service-call charge, open 24 hours."},
+ {n:"Village Home Watch & Services",c:"Home Watch",r:0,v:false,tier:"free",tel:"(352) 456-8587",note:"NHWA-accredited, veteran-owned home watch for seasonal residents and snowbirds — inspections, storm prep, keyholder and concierge services. Licensed, bonded & insured. Mon–Fri 8am–5pm."},
+ {n:"Village Dental",c:"Healthcare",r:0,v:false,tier:"free",tel:"(352) 633-4145",note:"General and cosmetic dentistry with three offices in The Villages: Lagrande Blvd (352-633-4145), Burnsed Blvd (352-750-8070) and Fieldcrest Dr (352-205-7667). Mon–Fri 8am–4pm."},
+ {n:"Sharp Lawn & Landscape",c:"Lawn & Landscaping",r:0,v:false,tier:"free",tel:"(352) 399-5877",note:"Lawn care, sod, irrigation, landscaping and pavers based at 3515 Wedgewood Ln in The Villages."},
+ {n:"Sandpiper Softwash",c:"Pressure Washing",r:0,v:false,tier:"free",tel:"(352) 601-7650",note:"Soft washing and pressure washing serving The Villages — house washing, roof and gutter cleaning, driveway and pool cage cleaning, rust removal. 150+ Google reviews. Free estimates, open daily 7am–7pm."},
+ {n:"White Aluminum & Windows",c:"Windows & Sunrooms",r:0,v:false,tier:"free",tel:"(352) 787-6783",note:"Sunrooms, screen rooms, pool enclosures, windows, doors and storm protection since 1955. Showroom at 2101 US Hwy 441, Leesburg, with a dedicated Villages team. Mon–Fri 8am–4pm, Sat 8am."},
+ {n:"Great Lakes Carpet & Tile",c:"Flooring",r:0,v:false,tier:"free",tel:"(352) 689-0210",note:"Carpet, tile, wood and laminate flooring serving The Villages area since 1991. Showrooms in Wildwood (850 S Main St), Lady Lake, Leesburg and Clermont. BBB-listed."},
+ {n:"Sunshine Water Systems",c:"Water Treatment",r:0,v:false,tier:"free",tel:"(352) 290-2945",note:"Locally owned water treatment — softeners, whole-home filtration, reverse osmosis, well systems and free water tests. 15 years serving The Villages area. Mon–Thu 8am–4:30pm, Fri 8am–4pm."},
+ {n:"Shutters Or Blinds",c:"Blinds & Shutters",r:0,v:false,tier:"free",tel:"(352) 771-2093",note:"Family-owned blinds, shades and shutters company in The Villages with 20+ years' experience. Free consultation and estimates. Mon–Fri 9am–5pm."},
+{n:"MaidPro The Villages",c:"Cleaning",r:0,v:false,tier:"free",tel:"(352) 218-6939",note:"Locally owned and operated residential cleaning service based in Wildwood, serving The Villages, Lady Lake, Leesburg and Eustis. Weekly, bi-weekly and one-time cleanings using a 49-point checklist."},{n:"Movers & Shakers",c:"Moving",r:0,v:false,tier:"free",tel:"(352) 350-6916",note:"Local moving company at 8600B E CR 466 in The Villages. Open Mon-Fri 7:30am-5pm, Sat 8am-3pm, closed Sunday."},{n:"Millhorn Elder Law Planning Group",c:"Legal / Estate",r:0,v:false,tier:"free",tel:"(352) 753-9333",note:"Elder law and estate planning firm founded by Eric Millhorn. Villages office at 3251 Wedgewood Lane (golf cart accessible) plus a Wildwood office on US Hwy 301. Wills, trusts, probate and long-term care planning."},{n:"ACG South Insurance Agency",c:"Insurance",r:0,v:false,tier:"free",tel:"(352) 753-2500",note:"Independent insurance agency at 955 Bichara Blvd in The Villages. Home, auto and commercial coverage; appointed with Travelers."},{n:"Odd Job Handyman Services",c:"Home / Handyman",r:0,v:false,tier:"free",tel:"(352) 459-1158",note:"Handyman serving The Villages area with roughly 40 years of experience in painting, drywall and general home repairs."},{n:"Batterbee Roofing",c:"Roofing",r:0,v:false,tier:"free",tel:"(352) 748-6300",note:"Locally owned roofing and gutter contractor (Lic. CCC1326176) at 4049 NE 120th Xing, Oxford. Roof replacement, repair, inspections, seamless gutters, skylights and solar tubes. Owens Corning Platinum Preferred Contractor; phones answered 24/7."},{n:"Sun State Power",c:"Electricians",r:0,v:false,tier:"free",tel:"(352) 561-3621",note:"BBB-accredited licensed electrical contractor (Lic. EC13010382) based at 13520 SE 36th Ave, Summerfield. Panels, generators, EV chargers, lighting, surge protection and commercial work. Mon–Fri 7am–4pm; free estimates."},{n:"TriCounty Pool & Spa",c:"Pools & Patios",r:0,v:false,tier:"free",tel:"(352) 326-0600",note:"Locally owned pool contractor (Lic. CPC1457773) serving The Villages for over 14 years. Pool installation, weekly maintenance, repairs, liners and stain removal, plus a spa and pool-supply showroom. Free inspections and quotes."},{n:"The Garage Door Doctor",c:"Garage Doors",r:0,v:false,tier:"free",tel:"(352) 257-3321",note:"Family-owned garage door company based in Belleview with 30+ years of experience serving The Villages, Lady Lake, Summerfield and Ocala. Door and opener installation, spring, cable and roller repair, maintenance; emergency calls available."},{n:"Royal Décor Company",c:"Painting",r:0,v:false,tier:"free",tel:"(352) 552-8082",note:"Family-owned, licensed and insured painting contractor serving The Villages for over 40 years. Interior and exterior house painting, cabinet and furniture painting, faux finishes, epoxy and stained concrete floors, and pressure washing. Free estimates."},{n:"First Choice Windows",c:"Windows & Sunrooms",r:0,v:false,tier:"free",tel:"(352) 433-0343",note:"Family-owned window and door replacement company (Lic. CBC1267851) at 1510 SW 17th St, Ocala. Energy-efficient replacement windows, exterior doors, sunrooms and lanai conversions serving The Villages, Marion, Lake and Sumter counties. Mon-Fri 9am-5pm; free in-home estimates."},{n:"JT's Tree Removal",c:"Tree Service",r:0,v:false,tel:"(352) 504-1210",tier:"free",note:"Licensed and insured tree company in business since 2008 serving The Villages, Lady Lake, Leesburg and Lake County. Tree removal, trimming, stump grinding and storm hazard work; BBB-accredited with free estimates."},{n:"South Florida Water",c:"Water Treatment",r:0,v:false,tier:"free",tel:"(888) 506-6821",note:"Family-owned water treatment company with 20+ years in business, BBB A+ accredited. Sells, installs and services water softeners, conditioners, salt-free systems and reverse osmosis throughout The Villages; licensed and insured."},{n:"The Powerwash Guy",c:"Pressure Washing",r:0,v:false,tier:"free",tel:"(352) 223-6090",note:"Pressure washing and window washing company at 2518 Burnsed Blvd, The Villages. Driveways, house washing, gutters and windows for residential customers. Mon-Fri 9am-5pm."},{n:"Premier Shades & Shutters",c:"Blinds & Shutters",r:0,v:false,tier:"free",tel:"(352) 355-5954",note:"Custom window treatment company in The Villages. Plantation shutters, blinds and shades with in-home consultations. Mon-Fri 9am-5pm, Sat 10am-3pm."},{n:"Instant Appliance Repair",c:"Appliance Repair",r:0,v:false,tier:"free",tel:"(352) 403-1890",note:"Family-owned appliance repair business in The Villages, in business over 35 years. Services LG, Samsung, Whirlpool, Kenmore, Speed Queen, Frigidaire, GE, KitchenAid and more. Mon-Thu 8am-4pm, Fri 8am-11am, closed weekends."},{n:"Affordable Lock & Security Solutions",c:"Locksmith",r:0,v:false,tier:"free",tel:"(888) 999-5625",note:"Locksmith and security company at 356 S Highway 441 in The Villages; parent company has served Central Florida since 1970. Residential and auto locksmith work, high-security locks, safes and security cameras. Mon-Fri 8:30am-5pm."},{n:"Stipes Seamless Gutters",c:"Gutters",r:0,v:false,tier:"free",tel:"(352) 390-7744",note:"Family-owned and operated gutter company with 10+ years of experience serving The Villages and Wildwood. Seamless gutter installation and repair, underground drains and attic stairs."},{n:"Mansfield Landscaping",c:"Landscape Curbing",r:0,v:false,tier:"free",tel:"(352) 561-8537",note:"Local landscaping company installing custom decorative concrete landscape curbing throughout The Villages, plus general landscaping services."},{n:"Discount Mini Storage of The Villages",c:"Storage",r:0,v:false,tier:"free",tel:"(352) 259-8128",note:"Self-storage facility at 708 S Hwy 441 in Lady Lake serving The Villages. Climate-controlled and standard units plus RV and boat storage."},{n:"Appliance Repair Specialists",c:"Appliance Repair",r:0,v:false,tier:"free",tel:"(352) 203-0481",note:"Appliance repair company with a Villages-area location; LG and Samsung factory-trained technicians, same-day service and free service call with repair. Open Mon-Fri, Sat 8am-12pm, closed Sunday."},{n:"DNA Locksmith",c:"Locksmith",r:0,v:false,tier:"free",tel:"(352) 507-5397",note:"Veteran-owned 24/7 mobile locksmith based in Lady Lake serving The Villages, Fruitland Park, Summerfield and Leesburg. Home rekeys, lockouts, deadbolts, electronic locks and automotive keys; BBB-listed with 90-day warranty on work."},{n:"Larry's Gutters",c:"Gutters",r:0,v:false,tier:"free",tel:"(352) 460-0450",note:"Gutter company based in Fruitland Park serving The Villages. Seamless gutter installation, gutter guards, cleaning and repair; free quotes."},{n:"Curb It Company of Lady Lake",c:"Landscape Curbing",r:0,v:false,tier:"free",tel:"(352) 821-4800",note:"Continuous concrete landscape border installer based in Lady Lake, serving Central Florida and The Villages for over 30 years. Multiple curb styles and colors; free estimates."},{n:"44 Self Storage",c:"Storage",r:0,v:false,tier:"free",tel:"(352) 399-2438",note:"Self-storage facility at 5688 E SR 44 in Wildwood serving The Villages. Office hours Mon-Fri 9am-5pm, Sat 9am-4pm, closed Sunday."},
+{n:"Brownings Aluminum & Screen Repair",c:"Screen Enclosures",r:0,v:false,tier:"free",tel:"(352) 680-0280",note:"Veteran-owned, family-operated screen enclosure company serving The Villages. Screen repair, full panel rescreening, pool cages, lanais, gutters and soffit. Free estimates. Office Mon-Fri 9am-5pm."},
+{n:"FertiGator Lawn Care",c:"Irrigation",r:0,v:false,tier:"free",tel:"(352) 314-2867",note:"Irrigation repair and maintenance in The Villages, Lady Lake and Wildwood since 2005. Fixes sprinkler heads, nozzles, rain sensors and smart systems; twice-yearly tune-up program. A+ BBB rating. Mon-Fri 8am-4pm."},
+{n:"C&C Decorative Concrete",c:"Concrete Coatings",r:0,v:false,tier:"free",tel:"(352) 480-0123",note:"Family-owned decorative concrete company serving The Villages and Central Florida. Driveway painting and coatings, epoxy and polyaspartic garage floors, pool decks, patios, staining and sealing."},
+{n:"Express Hearing Care",c:"Hearing Care",r:0,v:false,tier:"free",tel:"(352) 751-6400",note:"Hearing aid provider at 541 Fieldcrest Dr in The Villages. Hearing tests, hearing aid fittings and walk-in care; works with Starkey and Signia devices. Mon-Fri 9am-4pm."},
+{n:"Shannon Barley PA",c:"Financial / Tax",r:0,v:false,tier:"free",tel:"(352) 748-8000",note:"Full-service CPA firm with offices in Wildwood and The Villages (2113 Everglades Lane #180). Tax preparation and planning, accounting and business consulting for individuals and small businesses."},
+{n:"Villages Irrigation LLC",c:"Irrigation",r:0,v:false,tier:"free",tel:"(352) 235-0000",note:"Locally owned irrigation company based in Oxford serving The Villages. Sprinkler repair and installation, timers, valves, heads, rain gauges and broken pipe repair for all brands; frequently recommended on Talk of The Villages."},
+{n:"Chuck Farrell's Air Conditioning & Heating",c:"HVAC / AC",r:0,v:false,tier:"free",tel:"(352) 753-9497",note:"Family-owned AC contractor at 39475 County Rd 25 in Lady Lake. AC and heating repair, installation and maintenance serving The Villages, Lady Lake, Leesburg and Wildwood. Mon-Fri 8am-5pm."},
+{n:"Hema Rupnarain CPA PA",c:"Financial / Tax",r:0,v:false,tier:"free",tel:"(352) 351-9880",note:"Full-service CPA firm at 3251 Wedgewood Ln in The Villages. Individual and business tax prep, bookkeeping, estates and trusts, IRS representation and QuickBooks support. FICPA member firm. Mon-Fri 9am-5pm."},
+{n:"Village Painting LLC",c:"Painting",r:0,v:false,tier:"free",tel:"(352) 571-0353",note:"Owner-operated painting company in The Villages run by Nick Chriscinski. Interior and exterior residential painting; known on Nextdoor for meticulous, neat work at reasonable cost."},
+{n:"HearingLife of The Villages",c:"Hearing Care",r:0,v:false,tier:"free",tel:"(352) 667-7784",note:"Hearing care center at 3612 Wedgewood Lane in The Villages. Hearing tests, hearing aid fittings, repairs and follow-up care from Dr. Danielle Rosier and team; part of the national HearingLife network."},
+{n:"VCA Buffalo Ridge Animal Hospital",c:"Veterinary",r:0,v:false,tier:"free",tel:"(352) 750-4711",note:"Full-service animal hospital at 748 Village Campus Cir in The Villages. Preventive care, wellness programs, dentistry, ultrasound, radiology, soft tissue surgery, boarding and grooming. Mon-Fri from 8:30am, Sat 8am-5pm."},
+{n:"In Charge Electric",c:"Electricians",r:0,v:false,tier:"free",tel:"(352) 350-7878",note:"Family-owned, state-licensed electrician at 1000 N Blvd E in Leesburg, established 2007. Flat-rate pricing; serves The Villages, Lady Lake, Fruitland Park, Wildwood and Summerfield. BBB accredited, A+ rating. Mon-Fri 9am-5pm."},
+{n:"Two Men and a Truck — Ocala/The Villages",c:"Moving",r:0,v:false,tier:"free",tel:"(352) 353-8079",note:"Local franchise of the national moving company at 160 SE County Hwy 484 in Ocala. Local and long-distance moving, packing and storage serving The Villages and surrounding tri-county area."},
+{n:"Lake Eye Associates — The Villages",c:"Eye Care",r:0,v:false,tier:"free",tel:"(352) 750-2020",note:"Ophthalmology and optometry practice at 1400 N US Hwy 441, Ste 521 in The Villages. General eye care, cataract surgery, LASIK, eyelid surgery and on-site optical shop with licensed opticians. Mon-Fri 8am-5pm."},
+{n:"Tuffy Tire & Auto Service Center — Summerfield",c:"Auto",r:0,v:false,tier:"free",tel:"(352) 322-4398",note:"AAA-approved auto repair at 16676 US Hwy 441 in Summerfield, minutes from The Villages. Tires, brakes, alignments, oil changes, batteries, suspension and exhaust. Open 7 days."},
+{n:"Colony Plaza Animal Hospital",c:"Veterinary",r:0,v:false,tier:"free",tel:"(352) 633-7327",note:"Full-service veterinary hospital at 340 Heald Way, Bldg 320 in The Villages. Wellness and preventive care, dentistry, surgery, diagnostics, urgent care, boarding and grooming. Mon-Fri 8am-5pm, Sat 8am-1pm, closed Sunday; patients seen by appointment."},
+{n:"EyeSite of The Villages",c:"Eye Care",r:0,v:false,tier:"free",tel:"(352) 674-3937",note:"Optometry practice with two Villages locations - 2909 Traverse Trail near Brownwood and 2198 Everglades Lane at Magnolia Plaza. Medical eye exams, retinal imaging, dry-eye treatment and a full optical shop; golf cart accessible. Mon-Fri 9am-5pm, closed weekends."},
+{n:"Exceptional Urgent Care",c:"Healthcare",r:0,v:false,tier:"free",tel:"(352) 391-5200",note:"Physician-owned urgent care at 13767 US Hwy 441, Lady Lake, serving The Villages. No appointment needed - call ahead for the waitlist. On-site lab with results in under 15 minutes, X-ray, EKG, sutures and splinting, plus telemedicine visits. Mon-Fri 9am-5pm, Sat 9am-3pm, closed Sunday."},
+{n:"Dino Screens & Aluminum",c:"Screen Enclosures",r:0,v:false,tier:"free",tel:"(352) 461-0503",note:"Family-operated, veteran-owned screen and aluminum company at 8472 NE 43rd Way, Wildwood, serving The Villages plus Sumter, Lake, Marion and Citrus counties. Pool cages, lanais, screen repair and full rescreens using Phifer mesh. BBB A+ rated; free estimates."},
+{n:"ERA Grizzard Real Estate \u2014 The Villages",c:"Real Estate",r:0,v:false,tier:"free",tel:"(352) 259-4900",note:"Family-owned brokerage serving Central Florida since the 1960s, with a dedicated Villages office at 840 County Road 466, Lady Lake. Buyer and seller representation, relocation help and property management."},
+{n:"AllSolar Energy",c:"Solar",r:0,v:false,tier:"free",tel:"(866) 412-4218",note:"Florida solar and battery provider with a Villages showroom at 4085 Wedgewood Lane, Suite 400, The Villages. Residential and commercial solar panel systems, battery backup and service for existing systems throughout Central Florida."},
+{n:"Central Mobility & Rehab Equipment",c:"Mobility / Medical",r:0,v:false,tier:"free",tel:"(352) 742-7878",note:"Durable medical equipment and mobility store at 11433 US Hwy 441, Tavares, serving The Villages. Mobility scooters, power wheelchairs, lift chairs, rollators, compression stockings and vehicle lifts, plus in-house and house-call repairs. Mon-Fri 8:30am-5pm, Sat 10am-2pm, closed Sunday."},
+{n:"Squeegeez Services",c:"Window Cleaning",r:0,v:false,tier:"free",tel:"(352) 900-1599",note:"Family-owned window cleaning company serving The Villages, Leesburg and Lake County for over 40 years. Window cleaning, pressure washing, screen repair, gutter cleaning and solar panel cleaning; the owners do the work, not subcontractors. Free estimates by phone or text."},
+{n:"The Sleep Center",c:"Mattress / Furniture",r:0,v:false,tier:"free",tel:"(352) 753-0672",note:"Locally owned mattress showroom at 2255A Parr Dr in The Villages. Mattresses and adjustable bases with assembly and same-day delivery. Mon-Sat 10am-7pm, Sun 12-6pm."},
+{n:"Solar Controllers",c:"Window Tinting",r:0,v:false,tier:"free",tel:"(352) 690-1820",note:"3M Authorized window film dealer serving The Villages and Central Florida for 20+ years. Residential and commercial window tinting and solar film, plus replacement windows. Free estimates."},
+{n:"Poopity Scoop",c:"Pet Waste Removal",r:0,v:false,tier:"sponsor",tel:"(877) 699-7667",note:"Locally owned, veteran- and law enforcement-founded pet waste removal serving homeowners, HOAs and communities throughout The Villages and surrounding areas. Weekly and flexible service plans, sanitized equipment and a no-judgment guarantee. Discounts for seniors, veterans and first responders. Book online at poopityscoopfl.com."}];
+const EV=[
+ {d:"SAT · 9:00am–1:00pm",t:"Brownwood Farmers Market",w:"Brownwood Paddock Square"},
+ {d:"NIGHTLY · 5–9pm (6–10 summer)",t:"Free live music on the squares",w:"Spanish Springs · Lake Sumter · Brownwood"},
+ {d:"TUE · 5–9pm (first full week)",t:"Market Night",w:"Spanish Springs Town Square"},
+ {d:"WED · 5–9pm (first full week)",t:"Market Night",w:"Lake Sumter Landing"},
+ {d:"THU · 5–9pm (first full week)",t:"Market Night",w:"Brownwood Paddock Square"},
+];
+let activeCat="";
+const chips=document.getElementById('chips');
+function buildChips(){
+  chips.innerHTML='<div class="chip '+(activeCat===''?'on':'')+'" onclick="pick(\'\')">All</div>'+
+    CATS.map(c=>'<div class="chip '+(activeCat===c?'on':'')+'" onclick="pick(\''+c.replace(/'/g,"")+'\')">'+c+'</div>').join('');
+}
+function pick(c){activeCat=(activeCat===c?'':c);buildChips();render();}
+buildChips();
+
+const lcat=document.getElementById('lcat');
+lcat.innerHTML=CATS.map(c=>'<option>'+c+'</option>').join('');
+
+function render(){
+  const q=document.getElementById('q').value.toLowerCase();
+  let list=B.filter(x=>{
+    if(activeCat && x.c!==activeCat) return false;
+    if(q && !(x.n.toLowerCase().includes(q)||x.c.toLowerCase().includes(q)||x.note.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const rank={sponsor:0,pro:1,free:2};
+  list.sort((u,v)=>(rank[u.tier]-rank[v.tier])||(v.r-u.r));
+  document.getElementById('none').style.display=list.length?'none':'block';
+  document.getElementById('grid').innerHTML=list.map(x=>`
+    <div class="card ${x.tier==='sponsor'?'feat':''}">
+      ${x.tier==='sponsor'?'<div class="spon">★ Category Sponsor</div>':''}
+      <div class="cname">${x.n}</div>
+      <div><span class="cat">${x.c}</span></div>
+      <div class="meta">📞 ${x.tel}</div>
+      <div>${x.note}</div>
+      <div class="actions">
+        <button class="lead" onclick="openLead('${x.c.replace(/'/g,'')}')">Get a quote</button>
+        <button class="mini">Call</button>
+        <button class="mini fill">View</button>
+      </div>
+    </div>`).join('');
+}
+render();
+document.getElementById('ev').innerHTML=EV.map(e=>`<div class="evcard"><div class="d">${e.d}</div><h3>${e.t}</h3><div class="w">📍 ${e.w}</div></div>`).join('');
+
+function openClaim(){document.getElementById('claim').classList.add('show');}
+function openLead(cat){document.getElementById('leadm').classList.add('show'); if(cat){const o=[...lcat.options].find(o=>o.value===cat); if(o)lcat.value=cat;}}
+function close_(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');}));
+function sendLead(){const n=document.getElementById('lname').value;if(!n){alert('Add your name first.');return;}alert("Demo: your request would go to vetted "+lcat.value+" pros. In the live site each lead bills the pro automatically.");close_('leadm');}
+function subscribe(){const e=document.getElementById('email').value;if(e&&e.includes('@')){alert("Demo: '"+e+"' added to Catalogue Weekly (Beehiiv) in the live site. 🎉");document.getElementById('email').value='';}else alert('Enter a valid email.');}
+
+let NEWS = [
+  {title:"Sumter County approves new golf-cart bridge near Eastport", date:"Today", link:"https://www.villages-news.com/"},
+  {title:"Free new-resident welcome coffee added at Lake Sumter Landing", date:"Today", link:"https://www.villages-news.com/"},
+  {title:"Pickleball club opens registration for summer ladders", date:"Yesterday", link:"https://www.villages-news.com/"},
+  {title:"Home-services scam warning issued for local residents", date:"Yesterday", link:"https://www.villages-news.com/"},
+  {title:"New medical clinic opens near Brownwood", date:"2 days ago", link:"https://www.villages-news.com/"},
+  {title:"Rec center class schedule updated for the season", date:"3 days ago", link:"https://www.villages-news.com/"},
+];
+function renderBuzz(){
+  document.getElementById('buzz').innerHTML = NEWS.slice(0,6).map(n=>
+    `<div class="bz"><div class="dt">${n.date||'Local'}</div><a href="${n.link||'#'}" target="_blank" rel="noopener">${n.title}</a></div>`).join('');
+}
+renderBuzz();
+// optional live data: read catalogue.json / restaurants.json news if present
+fetch('restaurants.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{
+  if(d && Array.isArray(d.updates) && d.updates.length){ UPDATES=d.updates; renderUpdates(); }
+  if(d && Array.isArray(d.news) && d.news.length){ NEWS=d.news.map(n=>({title:n.title,date:n.date||'',link:n.link||'#'})); renderBuzz(); }
+}).catch(()=>{});
+
+
+let UPDATES = [
+  {kind:"news",text:"The Villages Health primary care is now part of CenterWell Senior Primary Care",link:"https://thevillageshealth.com/"},
+  {kind:"news",text:"Brownwood Farmers Market runs Saturdays 9am–1pm",link:"https://www.thevillages.com/whats-new/health-wellness/visit-brownwood-farmers-market/"},
+  {kind:"news",text:"Free live music on the squares nightly — 6 to 10 p.m. summer hours",link:"https://www.thevillagesentertainment.com/nightly-entertainment/"},
+  {kind:"news",text:"Directory rebuilt with verified local businesses — more added weekly",link:"#"},
+];
+function renderUpdates(){
+  const map={opening:["t-open","Opening"],closing:["t-close","Closing"],correction:["t-fix","Correction"],news:["t-news","News"]};
+  const el=document.getElementById('ups'); if(!el) return;
+  el.innerHTML = UPDATES.slice(0,8).map(u=>{const m=map[u.kind]||map.news;
+    return `<div class="up"><span class="tag ${m[0]}">${m[1]}</span><a href="${u.link||'#'}" target="_blank" rel="noopener">${u.text}</a></div>`;}).join('');
+}
+renderUpdates();
+
+</script>
+</body>
+</html>
